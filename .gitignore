@@ -1,0 +1,11 @@
+# Local environment values and credentials
+.env.local
+.env.*.local
+!.env.local.example
+*.pem
+serviceAccountKey.json
+
+# Next.js build output
+.next/
+out/
+node_modules/

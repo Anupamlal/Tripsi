@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import { FirebaseAnalytics } from "../components/FirebaseAnalytics";
+import messages from "../locales/en.json";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Tripsi — Travel, thoughtfully planned",
-  description: "Personalized trips made simple.",
+  title: messages.meta.title,
+  description: messages.meta.description,
 };
 
 export default function RootLayout({

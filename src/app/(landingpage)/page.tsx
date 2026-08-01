@@ -1,145 +1,134 @@
 import Link from "next/link";
+import { AuthNavigation } from "../../components/AuthNavigation";
+import messages from "../../locales/en.json";
 import { routes } from "../../routes";
-import { destinations } from "../landingpage/data";
+import styles from "./landing.module.css";
+
+const { common, landing } = messages;
 
 export default function LandingPage() {
   return (
     <main>
-      <nav className="nav shell">
-        <Link className="brand" href={routes.home} aria-label="Tripsi home">
-          <span className="brand-mark">✦</span> Tripsi
+      <nav className={`${styles.nav} shell`}>
+        <Link className="brand" href={routes.home} aria-label={landing.brandAriaLabel}>
+          <span className="brand-mark">✦</span> {common.brand}
         </Link>
-        <div className="nav-links">
-          <a href="#discover">Discover</a>
-          <a href="#how-it-works">How it works</a>
-          <a href="#about">About us</a>
+        <div className={styles.navLinks}>
+          <a href="#discover">{landing.nav.discover}</a>
+          <a href="#how-it-works">{landing.nav.howItWorks}</a>
+          <a href="#about">{landing.nav.about}</a>
         </div>
-        <Link className="login" href={routes.login}>
-          Log in <span>↗</span>
-        </Link>
+        <AuthNavigation />
       </nav>
-
-      <section className="hero shell" id="top">
+      <section className={`${styles.hero} shell`} id="top">
         <div className="hero-copy">
           <p className="eyebrow">
-            <span /> Travel, thoughtfully planned
+            <span /> {landing.hero.eyebrow}
           </p>
           <h1>
-            More wonder.
+            {landing.hero.title}
             <br />
-            <em>Less planning.</em>
+            <em>{landing.hero.titleEmphasis}</em>
           </h1>
-          <p className="hero-description">
-            Tell us how you like to travel and Tripsi creates a journey that
-            feels unmistakably yours.
-          </p>
+          <p className={styles.heroDescription}>{landing.hero.description}</p>
           <Link className="primary-button" href={routes.signUp}>
-            Start planning <span>→</span>
+            {landing.hero.cta} <span>{common.arrow}</span>
           </Link>
-          <div className="traveler-note">
-            <div className="avatars">
+          <div className={styles.travelerNote}>
+            <div className={styles.avatars}>
               <i>J</i>
               <i>M</i>
               <i>S</i>
               <i>A</i>
             </div>
             <p>
-              <strong>12k+ travelers</strong>
+              <strong>{landing.hero.travelers}</strong>
               <br />
-              are exploring with Tripsi
+              {landing.hero.travelersDescription}
             </p>
           </div>
         </div>
-        <div className="hero-art" aria-label="Illustration of a coastal trip">
-          <div className="sun" />
-          <div className="cloud cloud-one" />
-          <div className="cloud cloud-two" />
-          <div className="mountain mountain-back" />
-          <div className="mountain mountain-front" />
-          <div className="water" />
-          <div className="shore" />
-          <div className="postcard">
-            <span className="postcard-stamp">✦</span>
+        <div className={styles.heroArt} aria-label={landing.hero.artAriaLabel}>
+          <div className={styles.sun} />
+          <div className={`${styles.cloud} ${styles.cloudOne}`} />
+          <div className={`${styles.cloud} ${styles.cloudTwo}`} />
+          <div className={`${styles.mountain} ${styles.mountainBack}`} />
+          <div className={`${styles.mountain} ${styles.mountainFront}`} />
+          <div className={styles.water} />
+          <div className={styles.shore} />
+          <div className={styles.postcard}>
+            <span className={styles.postcardStamp}>✦</span>
             <p>
-              Your next
+              {landing.hero.postcard}
               <br />
-              <strong>great story</strong>
+              <strong>{landing.hero.postcardEmphasis}</strong>
             </p>
-            <span className="postcard-line" />
+            <span className={styles.postcardLine} />
           </div>
-          <div className="location-tag">
-            <span>✦</span> Made for you
+          <div className={styles.locationTag}>
+            <span>✦</span> {landing.hero.madeForYou}
           </div>
-          <div className="plane">⌁</div>
+          <div className={styles.plane}>⌁</div>
         </div>
       </section>
-
-      <section className="planner-wrap shell" aria-label="Plan a trip">
-        <div className="planner-card">
-          <div className="planner-heading">
-            <span className="planner-icon">✦</span>
+      <section className={`${styles.plannerWrap} shell`} aria-label={landing.planner.ariaLabel}>
+        <div className={styles.plannerCard}>
+          <div className={styles.plannerHeading}>
+            <span className={styles.plannerIcon}>✦</span>
             <div>
-              <p>Where to next?</p>
-              <small>Let&apos;s find your perfect escape</small>
+              <p>{landing.planner.heading}</p>
+              <small>{landing.planner.subheading}</small>
             </div>
           </div>
           <label>
-            Destination{" "}
-            <div className="field">
+            {landing.planner.destination}
+            <div className={styles.field}>
               <span>⌖</span>
-              <input placeholder="City, country, or anywhere" />
+              <input placeholder={landing.planner.destinationPlaceholder} />
             </div>
           </label>
           <label>
-            When{" "}
-            <div className="field">
+            {landing.planner.when}
+            <div className={styles.field}>
               <span>□</span>
-              <input placeholder="Add dates" />
+              <input placeholder={landing.planner.whenPlaceholder} />
             </div>
           </label>
           <label>
-            Travelers{" "}
-            <div className="field">
+            {landing.planner.travelers}
+            <div className={styles.field}>
               <span>♙</span>
-              <input placeholder="2 travelers" />
+              <input placeholder={landing.planner.travelersPlaceholder} />
             </div>
           </label>
-          <button
-            className="search-button"
-            type="button"
-            aria-label="Search trips"
-          >
-            →
+          <button className={styles.searchButton} type="button" aria-label={landing.planner.searchAriaLabel}>
+            {common.arrow}
           </button>
         </div>
       </section>
-
-      <section className="discover shell" id="discover">
+      <section className={`${styles.discover} shell`} id="discover">
         <div>
           <p className="eyebrow">
-            <span /> Curated escapes
+            <span /> {landing.discover.eyebrow}
           </p>
           <h2>
-            Dream a little <em>bigger.</em>
+            {landing.discover.title} <em>{landing.discover.titleEmphasis}</em>
           </h2>
         </div>
-        <a className="all-link" href="#discover">
-          View all destinations <span>→</span>
+        <a className={`${styles.allLink} all-link`} href="#discover">
+          {landing.discover.viewAll} <span>{common.arrow}</span>
         </a>
-        <div className="destination-grid">
-          {destinations.map((destination, index) => (
-            <article
-              className={`destination-card ${destination.color}`}
-              key={destination.name}
-            >
-              <div className="card-image">
-                <span>{index === 0 ? "☀" : index === 1 ? "✿" : "◒"}</span>
+        <div className={styles.destinationGrid}>
+          {landing.destinations.map((destination) => (
+            <article className={`${styles.destinationCard} ${styles[destination.color]}`} key={destination.name}>
+              <div className={styles.cardImage}>
+                <span>{destination.symbol}</span>
               </div>
-              <div className="card-content">
+              <div className={styles.cardContent}>
                 <p>{destination.country}</p>
                 <h3>{destination.name}</h3>
                 <button type="button">
-                  Explore <span>→</span>
+                  {landing.discover.explore} <span>{common.arrow}</span>
                 </button>
               </div>
             </article>

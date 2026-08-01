@@ -1,0 +1,278 @@
+.authPage {
+  display: grid;
+  min-height: 100vh;
+  grid-template-columns: 44% 56%;
+  background: #fff;
+}
+
+.authAside {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 43px clamp(36px, 6vw, 100px);
+  background: #e2eee6;
+}
+
+.authAsideCopy {
+  position: relative;
+  z-index: 2;
+  margin-top: auto;
+  margin-bottom: 116px;
+}
+
+.authAsideCopy h1 {
+  margin: 15px 0;
+  font-size: clamp(42px, 4.4vw, 66px);
+}
+
+.authAsideCopy > p:last-child {
+  max-width: 355px;
+  color: #5e7067;
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+.asideLandscape {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 274px;
+  overflow: hidden;
+  background: #b5d6d0;
+}
+
+.asideSun {
+  position: absolute;
+  right: 20%;
+  top: 26px;
+  width: 104px;
+  height: 104px;
+  border-radius: 50%;
+  background: #f4c66c;
+}
+
+.asideMountain {
+  position: absolute;
+  inset: auto -5% 0 -5%;
+  height: 205px;
+  background: #5e9a89;
+  clip-path: polygon(0 100%, 0 74%, 19% 34%, 32% 61%, 53% 6%, 73% 65%, 86% 33%, 100% 67%, 100% 100%);
+}
+
+.asideWater {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 62px;
+  background: repeating-linear-gradient(174deg, #4999a8 0 9px, #66acb1 9px 18px);
+}
+
+.authPanel {
+  display: grid;
+  place-items: center;
+  padding: 48px 24px;
+  background: #fffdf9;
+}
+
+.authCard {
+  width: min(100%, 425px);
+}
+
+.authKicker {
+  color: #849087;
+  font: 500 10px "DM Mono";
+  letter-spacing: 1.3px;
+}
+
+.authCard h2 {
+  margin: 12px 0 10px;
+  font-size: 43px;
+  letter-spacing: -2px;
+}
+
+.authSubtitle {
+  margin: 0 0 27px;
+  color: #77827c;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.authForm {
+  display: grid;
+  gap: 17px;
+}
+
+.authForm > label,
+.nameFields label {
+  display: grid;
+  gap: 8px;
+  color: #647069;
+  font: 500 10px "DM Mono";
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+
+.authForm input:not([type="checkbox"]) {
+  width: 100%;
+  padding: 13px 14px;
+  border: 1px solid #e5e3dd;
+  border-radius: 5px;
+  outline-color: var(--orange);
+  color: var(--ink);
+  background: #fff;
+  font: 14px "DM Sans";
+}
+
+.authForm input::placeholder {
+  color: #abb1ac;
+}
+
+.nameFields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.authOptions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: -2px;
+  font-size: 11px;
+}
+
+.authOptions a,
+.terms a {
+  color: var(--orange);
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.remember,
+.terms {
+  color: #737d76;
+  font-size: 11px;
+}
+
+.remember input,
+.terms input {
+  accent-color: var(--orange);
+  margin: 0 6px 0 0;
+  vertical-align: middle;
+}
+
+.terms {
+  display: block !important;
+  line-height: 1.5;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+}
+
+.authSubmit {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 3px;
+  padding: 14px 17px;
+  border: 0;
+  border-radius: 5px;
+  color: #fff;
+  background: var(--ink);
+  font-weight: 700;
+}
+
+.authSubmit span {
+  color: #f5b49b;
+  font-size: 20px;
+}
+
+.authDivider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 25px 0 17px;
+  color: #9aa39d;
+  font: 10px "DM Mono";
+  text-transform: uppercase;
+}
+
+.authDivider:before,
+.authDivider:after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #e8e6e1;
+}
+
+.socialButtons {
+  display: block;
+  width: 100%;
+}
+
+.socialButtons button {
+  width: 100%;
+  padding: 11px;
+  border: 1px solid #e5e3dd;
+  border-radius: 5px;
+  color: var(--ink);
+  background: #fff;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.socialButtons b {
+  margin-right: 7px;
+  color: var(--orange);
+}
+
+.authSwitch {
+  margin-top: 25px;
+  text-align: center;
+  color: #78837b;
+  font-size: 12px;
+}
+
+.authSwitch a {
+  color: var(--ink);
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.authSwitch span {
+  color: var(--orange);
+  margin-left: 3px;
+}
+
+@media (max-width: 760px) {
+  .authPage {
+    grid-template-columns: 1fr;
+  }
+
+  .authAside {
+    min-height: 270px;
+    padding: 27px 32px;
+  }
+
+  .authAsideCopy {
+    margin: auto 0 34px;
+  }
+
+  .authAsideCopy h1 {
+    font-size: 42px;
+  }
+
+  .asideLandscape {
+    height: 145px;
+    opacity: 0.75;
+  }
+
+  .authPanel {
+    padding: 46px 24px;
+  }
+
+  .authCard h2 {
+    font-size: 39px;
+  }
+}

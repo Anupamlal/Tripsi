@@ -4,4 +4,5 @@ export const routes = {
   landingPage: "/",
   login: "/login",
   signUp: "/signup",
+  profile: "/profile",
 } as const;

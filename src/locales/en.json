@@ -1,0 +1,173 @@
+{
+  "meta": {
+    "title": "Tripsi — Travel, thoughtfully planned",
+    "description": "Personalized trips made simple."
+  },
+  "common": {
+    "brand": "Tripsi",
+    "arrow": "→",
+    "loading": "Loading account",
+    "profileAriaLabel": "Open profile for {name}"
+  },
+  "landing": {
+    "brandAriaLabel": "Tripsi home",
+    "nav": {
+      "discover": "Discover",
+      "howItWorks": "How it works",
+      "about": "About us",
+      "login": "Log in"
+    },
+    "hero": {
+      "eyebrow": "Travel, thoughtfully planned",
+      "title": "More wonder.",
+      "titleEmphasis": "Less planning.",
+      "description": "Tell us how you like to travel and Tripsi creates a journey that feels unmistakably yours.",
+      "cta": "Start planning",
+      "travelers": "12k+ travelers",
+      "travelersDescription": "are exploring with Tripsi",
+      "artAriaLabel": "Illustration of a coastal trip",
+      "postcard": "Your next",
+      "postcardEmphasis": "great story",
+      "madeForYou": "Made for you"
+    },
+    "planner": {
+      "ariaLabel": "Plan a trip",
+      "heading": "Where to next?",
+      "subheading": "Let's find your perfect escape",
+      "destination": "Destination",
+      "destinationPlaceholder": "City, country, or anywhere",
+      "when": "When",
+      "whenPlaceholder": "Add dates",
+      "travelers": "Travelers",
+      "travelersPlaceholder": "2 travelers",
+      "searchAriaLabel": "Search trips"
+    },
+    "discover": {
+      "eyebrow": "Curated escapes",
+      "title": "Dream a little",
+      "titleEmphasis": "bigger.",
+      "viewAll": "View all destinations",
+      "explore": "Explore"
+    },
+    "destinations": [
+      {
+        "name": "Amalfi Coast",
+        "country": "Italy",
+        "color": "amber",
+        "symbol": "☀"
+      },
+      { "name": "Kyoto", "country": "Japan", "color": "rose", "symbol": "✿" },
+      {
+        "name": "Santorini",
+        "country": "Greece",
+        "color": "blue",
+        "symbol": "◒"
+      }
+    ]
+  },
+  "login": {
+    "eyebrow": "Welcome back",
+    "asideTitle": "Your next story",
+    "asideTitleEmphasis": "is waiting.",
+    "asideDescription": "Pick up where you left off and return to all the journeys made just for you.",
+    "kicker": "TRIPSI ACCOUNT",
+    "title": "Welcome back",
+    "subtitle": "Sign in to continue planning your next escape.",
+    "email": "Email address",
+    "emailPlaceholder": "you@example.com",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "rememberMe": "Remember me",
+    "forgotPassword": "Forgot password?",
+    "submit": "Log in",
+    "submitting": "Logging in…",
+    "divider": "or continue with",
+    "google": "Google",
+    "newToTripsi": "New to Tripsi?",
+    "createAccount": "Create an account",
+    "errors": {
+      "invalidEmailOrPassword": "Invalid email or password.",
+      "shortPassword": "Choose a password with at least 8 characters.",
+      "emailInUse": "An account already exists for this email address.",
+      "invalidEmail": "Enter a valid email address.",
+      "weakPassword": "Choose a stronger password.",
+      "operationNotAllowed": "Email/password sign-up is not enabled in Firebase yet.",
+      "generic": "We couldn’t log you in. Please try again."
+    }
+  },
+  "profile": {
+    "backToExplore": "Back to explore",
+    "eyebrow": "YOUR TRIPSI PROFILE",
+    "title": "Your travel, your way.",
+    "subtitle": "Keep your details and travel preferences ready for your next escape.",
+    "account": "Account",
+    "personalDetails": "Personal details",
+    "personalDetailsDescription": "The basics we use to personalize your Tripsi experience.",
+    "displayName": "Display name",
+    "email": "Email address",
+    "emailNote": "Your email is managed by your sign-in provider.",
+    "saveProfile": "Save profile",
+    "saving": "Saving…",
+    "saved": "Profile saved successfully.",
+    "preferences": "Travel preferences",
+    "preferencesDescription": "Saved on this device to help tailor your future recommendations.",
+    "travelStyle": "Travel style",
+    "travelStyleOptions": [
+      "A little of everything",
+      "Slow and scenic",
+      "Culture and food",
+      "Adventure outdoors",
+      "Rest and recharge"
+    ],
+    "budget": "Typical budget",
+    "budgetOptions": [
+      "Choose a range",
+      "Value conscious",
+      "Comfortable",
+      "Treat yourself"
+    ],
+    "departureCity": "Home airport or city",
+    "departurePlaceholder": "e.g. Mumbai",
+    "savePreferences": "Save preferences",
+    "preferencesSaved": "Travel preferences saved on this device.",
+    "signOut": "Sign out",
+    "memberSince": "Member since",
+    "verified": "Email verified",
+    "notVerified": "Email not verified",
+    "loading": "Loading your profile…",
+    "errors": { "save": "We couldn’t save your profile. Please try again." }
+  },
+  "signup": {
+    "eyebrow": "Start your journey",
+    "asideTitle": "Let's go",
+    "asideTitleEmphasis": "somewhere.",
+    "asideDescription": "A few details are all we need to start making travel feel effortless.",
+    "kicker": "CREATE YOUR ACCOUNT",
+    "title": "Travel starts here",
+    "subtitle": "Create a free account and make every trip feel more you.",
+    "firstName": "First name",
+    "firstNamePlaceholder": "Alex",
+    "lastName": "Last name",
+    "lastNamePlaceholder": "Morgan",
+    "email": "Email address",
+    "emailPlaceholder": "you@example.com",
+    "password": "Create password",
+    "passwordPlaceholder": "At least 8 characters",
+    "termsStart": "I agree to the",
+    "terms": "Terms",
+    "termsJoiner": "and",
+    "privacy": "Privacy Policy",
+    "submit": "Create account",
+    "submitting": "Creating account…",
+    "existingAccount": "Already have an account?",
+    "login": "Log in",
+    "errors": {
+      "shortPassword": "Choose a password with at least 8 characters.",
+      "emailInUse": "An account already exists for this email address.",
+      "invalidEmail": "Enter a valid email address.",
+      "weakPassword": "Choose a stronger password.",
+      "operationNotAllowed": "Email/password sign-up is not enabled in Firebase yet.",
+      "generic": "We couldn’t create your account. Please try again."
+    }
+  }
+}

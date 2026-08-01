@@ -1,79 +1,127 @@
+"use client";
+
 import Link from "next/link";
+import messages from "../../locales/en.json";
 import { routes } from "../../routes";
+import { useRouter } from "next/navigation";
+import { type SubmitEvent, useState } from "react";
+import { signInWithEmailAndPassword, getAuth } from "firebase/auth";
+import { firebaseApp } from "../../lib/firebase";
+import styles from "./auth.module.css";
+
+const { common, login } = messages;
 
 export default function LoginPage() {
+  const router = useRouter();
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  async function handleLogin(event: SubmitEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setError("");
+    const formData = new FormData(event.currentTarget);
+    const email = String(formData.get("email") ?? "").trim();
+    const password = String(formData.get("password") ?? "");
+
+    if (password.length < 8) {
+      setError(login.errors.shortPassword);
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const userCredential = await signInWithEmailAndPassword(getAuth(firebaseApp), email, password);
+      if (userCredential.user) {
+        router.push(routes.home);
+      } else {
+        setError(login.errors.invalidEmailOrPassword);
+      }
+    } catch (loginError: unknown) {
+      const code = (loginError as { code?: string }).code;
+      const messages: Record<string, string> = {
+        "auth/email-already-in-use": login.errors.emailInUse,
+        "auth/invalid-email": login.errors.invalidEmail,
+        "auth/weak-password": login.errors.weakPassword,
+        "auth/operation-not-allowed": login.errors.operationNotAllowed,
+      };
+      setError(messages[code ?? ""] ?? login.errors.invalidEmailOrPassword);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
   return (
-    <main className="auth-page">
-      <section className="auth-aside">
-        <Link className="brand" href={routes.landingPage}>
-          <span className="brand-mark">✦</span> Tripsi
+    <main className={styles.authPage}>
+      <section className={styles.authAside}>
+        <Link className="brand" href={routes.home}>
+          <span className="brand-mark">✦</span> {common.brand}
         </Link>
-        <div className="auth-aside-copy">
+        <div className={styles.authAsideCopy}>
           <p className="eyebrow">
-            <span /> Welcome back
+            <span /> {login.eyebrow}
           </p>
           <h1>
-            Your next story
+            {login.asideTitle}
             <br />
-            <em>is waiting.</em>
+            <em>{login.asideTitleEmphasis}</em>
           </h1>
-          <p>
-            Pick up where you left off and return to all the journeys made just
-            for you.
-          </p>
+          <p>{login.asideDescription}</p>
         </div>
-        <div className="aside-landscape">
-          <div className="aside-sun" />
-          <div className="aside-mountain" />
-          <div className="aside-water" />
+        <div className={styles.asideLandscape}>
+          <div className={styles.asideSun} />
+          <div className={styles.asideMountain} />
+          <div className={styles.asideWater} />
         </div>
       </section>
-      <section className="auth-panel">
-        <div className="auth-card">
-          <p className="auth-kicker">TRIPSI ACCOUNT</p>
-          <h2>Welcome back</h2>
-          <p className="auth-subtitle">
-            Sign in to continue planning your next escape.
-          </p>
-          <form className="auth-form">
+      <section className={styles.authPanel}>
+        <div className={styles.authCard}>
+          <p className={styles.authKicker}>{login.kicker}</p>
+          <h2>{login.title}</h2>
+          <p className={styles.authSubtitle}>{login.subtitle}</p>
+          <form className={styles.authForm} method="post" onSubmit={handleLogin}>
             <label>
-              Email address
-              <input
-                type="email"
-                placeholder="you@example.com"
-                autoComplete="email"
-              />
+              {login.email}
+              <input type="email" name="email" placeholder={login.emailPlaceholder} autoComplete="email" required />
             </label>
             <label>
-              Password
+              {login.password}
               <input
                 type="password"
-                placeholder="Enter your password"
+                name="password"
+                placeholder={login.passwordPlaceholder}
                 autoComplete="current-password"
+                required
+                minLength={8}
               />
             </label>
-            <div className="auth-options">
-              <label className="remember">
-                <input type="checkbox" /> Remember me
+            <div className={styles.authOptions}>
+              <label className={styles.remember}>
+                <input type="checkbox" /> {login.rememberMe}
               </label>
-              <a href="#reset">Forgot password?</a>
+              <a href="#reset">{login.forgotPassword}</a>
             </div>
-            <button className="auth-submit" type="submit">
-              Log in <span>→</span>
+            {error && (
+              <p className="auth-error" role="alert">
+                {error}
+              </p>
+            )}
+            <button className={styles.authSubmit} type="submit" disabled={isLoading}>
+              {isLoading ? login.submitting : login.submit}
+              <span>{common.arrow}</span>
             </button>
           </form>
-          <div className="auth-divider">
-            <span>or continue with</span>
+          <div className={styles.authDivider}>
+            <span>{login.divider}</span>
           </div>
-          <div className="social-buttons">
+          <div className={styles.socialButtons}>
             <button type="button">
-              <b>G</b> Google
+              <b>G</b> {login.google}
             </button>
           </div>
-          <p className="auth-switch">
-            New to Tripsi?{" "}
+          <p className={styles.authSwitch}>
+            {login.newToTripsi}{" "}
             <Link href={routes.signUp}>
-              Create an account <span>→</span>
+              {login.createAccount} <span>{common.arrow}</span>
             </Link>
           </p>
         </div>

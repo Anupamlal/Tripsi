@@ -1,9 +1,11 @@
 import {
   createUserWithEmailAndPassword,
+  GoogleAuthProvider,
   getAuth,
   onAuthStateChanged,
   sendEmailVerification,
   signInWithEmailAndPassword,
+  signInWithPopup,
   signOut,
   updateProfile,
   type NextOrObserver,
@@ -46,32 +48,90 @@ export async function signUpWithEmail(params: {
   const credential = await createUserWithEmailAndPassword(
     auth,
     params.email,
-    params.password,
+    params.password
   );
-  const displayName = [params.firstName, params.lastName].filter(Boolean).join(" ");
+  const displayName = [params.firstName, params.lastName]
+    .filter(Boolean)
+    .join(" ");
 
   if (displayName) {
     await updateProfile(credential.user, { displayName });
   }
 
-  const memberSince = credential.user.metadata.creationTime ?? new Date().toISOString();
+  const memberSince =
+    credential.user.metadata.creationTime ?? new Date().toISOString();
   await Promise.all([
-    set(ref(getFirebaseDatabase(), `${getUserRootPath(params.email)}/UserInfo`), {
-      name: displayName,
-      email: params.email,
-      memberSince,
-    }),
-    set(ref(getFirebaseDatabase(), `${getUserRootPath(params.email)}/Preferences`), {
-      travelStyle: params.preferences?.travelStyle ?? "",
-      budget: params.preferences?.budget ?? "",
-      departureCity: params.preferences?.departureCity ?? "",
-    }),
+    set(
+      ref(getFirebaseDatabase(), `${getUserRootPath(params.email)}/UserInfo`),
+      {
+        name: displayName,
+        email: params.email,
+        memberSince,
+      }
+    ),
+    set(
+      ref(
+        getFirebaseDatabase(),
+        `${getUserRootPath(params.email)}/Preferences`
+      ),
+      {
+        travelStyle: params.preferences?.travelStyle ?? "",
+        budget: params.preferences?.budget ?? "",
+        departureCity: params.preferences?.departureCity ?? "",
+      }
+    ),
   ]);
 
   return credential;
 }
 
-export async function updateUserProfile(user: User, profile: { displayName?: string | null }) {
+export const signupWithGoogle = async (preferences?: UserPreferences) => {
+  const provider = new GoogleAuthProvider();
+
+  try {
+    const credential = await signInWithPopup(auth, provider);
+    const user = credential.user;
+    const email = user.email;
+
+    if (!email) {
+      throw new Error("Google sign-in did not return an email address.");
+    } else {
+      console.log("Google sign-in successful for email:", email);
+    }
+    
+    const userExists = await checkIfUserExists(email);
+
+    if (userExists) {
+      return credential;
+    }
+    // Save user info in the database
+    const memberSince = user.metadata.creationTime ?? new Date().toISOString();
+
+    await Promise.all([
+      set(ref(getFirebaseDatabase(), `${getUserRootPath(email)}/UserInfo`), {
+        name: user.displayName ?? "",
+        email,
+        memberSince,
+      }),
+
+      set(ref(getFirebaseDatabase(), `${getUserRootPath(email)}/Preferences`), {
+        travelStyle: preferences?.travelStyle ?? "",
+        budget: preferences?.budget ?? "",
+        departureCity: preferences?.departureCity ?? "",
+      }),
+    ]);
+
+    return credential;
+  } catch (error) {
+    console.error("Error during Google sign-up:", error);
+    throw error;
+  }
+};
+
+export async function updateUserProfile(
+  user: User,
+  profile: { displayName?: string | null }
+) {
   await updateProfile(user, profile);
 }
 
@@ -83,11 +143,30 @@ export async function sendUserEmailVerification(user: User) {
   await sendEmailVerification(user);
 }
 
-export async function saveUserPreferences(email: string, preferences: UserPreferences) {
-  await set(ref(getFirebaseDatabase(), `${getUserRootPath(email)}/Preferences`), preferences);
+export async function saveUserPreferences(
+  email: string,
+  preferences: UserPreferences
+) {
+  await set(
+    ref(getFirebaseDatabase(), `${getUserRootPath(email)}/Preferences`),
+    preferences
+  );
 }
 
-export async function getUserPreferences(email: string): Promise<Partial<UserPreferences> | null> {
-  const snapshot = await get(ref(getFirebaseDatabase(), `${getUserRootPath(email)}/Preferences`));
-  return snapshot.exists() ? (snapshot.val() as Partial<UserPreferences>) : null;
+export async function getUserPreferences(
+  email: string
+): Promise<Partial<UserPreferences> | null> {
+  const snapshot = await get(
+    ref(getFirebaseDatabase(), `${getUserRootPath(email)}/Preferences`)
+  );
+  return snapshot.exists()
+    ? (snapshot.val() as Partial<UserPreferences>)
+    : null;
 }
+
+export const checkIfUserExists = async (email: string): Promise<boolean> => {
+  const snapshot = await get(
+    ref(getFirebaseDatabase(), `${getUserRootPath(email)}/UserInfo`)
+  );
+  return snapshot.exists();
+};

@@ -5,7 +5,7 @@ import messages from "../../locales/en.json";
 import { routes } from "../../routes";
 import { useRouter } from "next/navigation";
 import { type SubmitEvent, useState } from "react";
-import { loginWithEmail } from "../../services/firebase/auth";
+import { loginWithEmail, signupWithGoogle } from "../../services/firebase/auth";
 import styles from "./auth.module.css";
 
 const { common, login } = messages;
@@ -14,6 +14,7 @@ export default function LoginPage() {
   const router = useRouter();
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isGoogleSignIn, setIsGoogleSignIn] = useState(false);
 
   async function handleLogin(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -49,6 +50,29 @@ export default function LoginPage() {
     }
   }
 
+  async function handleGoogleLogin() {
+    setIsGoogleSignIn(true);
+    try {
+      const userCredential = await signupWithGoogle();
+      if (userCredential.user) {
+        router.push(routes.home);
+      } else {
+        setError(login.errors.generic);
+      }
+    } catch (loginError: unknown) {
+      const code = (loginError as { code?: string }).code;
+      const messages: Record<string, string> = {
+        "auth/email-already-in-use": login.errors.emailInUse,
+        "auth/invalid-email": login.errors.invalidEmail,
+        "auth/weak-password": login.errors.weakPassword,
+        "auth/operation-not-allowed": login.errors.operationNotAllowed,
+      };
+      setError(messages[code ?? ""] ?? login.errors.generic);
+    } finally {
+      setIsGoogleSignIn(false);
+    }
+  }
+
   return (
     <main className={styles.authPage}>
       <section className={styles.authAside}>
@@ -77,10 +101,20 @@ export default function LoginPage() {
           <p className={styles.authKicker}>{login.kicker}</p>
           <h2>{login.title}</h2>
           <p className={styles.authSubtitle}>{login.subtitle}</p>
-          <form className={styles.authForm} method="post" onSubmit={handleLogin}>
+          <form
+            className={styles.authForm}
+            method="post"
+            onSubmit={handleLogin}
+          >
             <label>
               {login.email}
-              <input type="email" name="email" placeholder={login.emailPlaceholder} autoComplete="email" required />
+              <input
+                type="email"
+                name="email"
+                placeholder={login.emailPlaceholder}
+                autoComplete="email"
+                required
+              />
             </label>
             <label>
               {login.password}
@@ -104,7 +138,11 @@ export default function LoginPage() {
                 {error}
               </p>
             )}
-            <button className={styles.authSubmit} type="submit" disabled={isLoading}>
+            <button
+              className={styles.authSubmit}
+              type="submit"
+              disabled={isLoading}
+            >
               {isLoading ? login.submitting : login.submit}
               <span>{common.arrow}</span>
             </button>
@@ -113,7 +151,7 @@ export default function LoginPage() {
             <span>{login.divider}</span>
           </div>
           <div className={styles.socialButtons}>
-            <button type="button">
+            <button type="button" onClick={handleGoogleLogin}>
               <b>G</b> {login.google}
             </button>
           </div>

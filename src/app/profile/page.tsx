@@ -1,29 +1,26 @@
 "use client";
 
 import Link from "next/link";
-import {
-  getAuth,
-  onAuthStateChanged,
-  signOut,
-  updateProfile,
-  type User,
-} from "firebase/auth";
 import { type SubmitEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { firebaseApp } from "../../lib/firebase";
 import messages from "../../locales/en.json";
 import { routes } from "../../routes";
+import {
+  getUserPreferences,
+  sendUserEmailVerification,
+  signOutUser,
+  type UserPreferences,
+  saveUserPreferences,
+  subscribeToAuthChanges,
+  updateUserProfile,
+} from "../../services/firebase/auth";
+import { type User } from "firebase/auth";
 import styles from "./profile.module.css";
 
 const { common, profile } = messages;
 const preferencesKey = "tripsi-travel-preferences";
 
-type Preferences = {
-  travelStyle: string;
-  budget: string;
-  departureCity: string;
-};
-const emptyPreferences: Preferences = {
+const emptyPreferences: UserPreferences = {
   travelStyle: profile.travelStyleOptions[0],
   budget: profile.budgetOptions[0],
   departureCity: "",
@@ -33,14 +30,16 @@ export default function ProfilePage() {
   const router = useRouter();
   const [user, setUser] = useState<User | null | undefined>(undefined);
   const [displayName, setDisplayName] = useState("");
-  const [preferences, setPreferences] = useState<Preferences>(emptyPreferences);
+  const [preferences, setPreferences] =
+    useState<UserPreferences>(emptyPreferences);
   const [profileMessage, setProfileMessage] = useState("");
   const [preferencesMessage, setPreferencesMessage] = useState("");
+  const [verificationMessage, setVerificationMessage] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+  const [isSendingVerification, setIsSendingVerification] = useState(false);
 
   useEffect(() => {
-    const auth = getAuth(firebaseApp);
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unsubscribe = subscribeToAuthChanges((currentUser) => {
       if (!currentUser) {
         router.replace(routes.login);
         return;
@@ -52,14 +51,39 @@ export default function ProfilePage() {
   }, [router]);
 
   useEffect(() => {
-    const savedPreferences = window.localStorage.getItem(preferencesKey);
-    if (!savedPreferences) return;
-    try {
-      setPreferences({ ...emptyPreferences, ...JSON.parse(savedPreferences) });
-    } catch {
-      window.localStorage.removeItem(preferencesKey);
+    async function loadPreferences() {
+      if (!user?.email) return;
+
+      const savedPreferences = window.localStorage.getItem(preferencesKey);
+      if (savedPreferences) {
+        try {
+          setPreferences({
+            ...emptyPreferences,
+            ...JSON.parse(savedPreferences),
+          });
+          return;
+        } catch {
+          window.localStorage.removeItem(preferencesKey);
+        }
+      }
+
+      try {
+        const remotePreferences = await getUserPreferences(user.email);
+        if (!remotePreferences) return;
+
+        const mergedPreferences = { ...emptyPreferences, ...remotePreferences };
+        setPreferences(mergedPreferences);
+        window.localStorage.setItem(
+          preferencesKey,
+          JSON.stringify(mergedPreferences)
+        );
+      } catch {
+        setPreferences(emptyPreferences);
+      }
     }
-  }, []);
+
+    void loadPreferences();
+  }, [user?.email]);
 
   async function saveProfile(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -67,7 +91,7 @@ export default function ProfilePage() {
     setProfileMessage("");
     setIsSaving(true);
     try {
-      await updateProfile(user, { displayName: displayName.trim() });
+      await updateUserProfile(user, { displayName: displayName.trim() });
       setProfileMessage(profile.saved);
     } catch {
       setProfileMessage(profile.errors.save);
@@ -76,18 +100,41 @@ export default function ProfilePage() {
     }
   }
 
-  function savePreferences(event: SubmitEvent<HTMLFormElement>) {
+  async function savePreferences(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
-    window.localStorage.setItem(preferencesKey, JSON.stringify(preferences));
-    setPreferencesMessage(profile.preferencesSaved);
+    if (!user?.email) return;
+
+    try {
+      window.localStorage.setItem(preferencesKey, JSON.stringify(preferences));
+      await saveUserPreferences(user.email, preferences);
+      setPreferencesMessage(profile.preferencesSaved);
+    } catch {
+      setPreferencesMessage(profile.errors.save);
+    }
   }
 
   async function handleSignOut() {
-    await signOut(getAuth(firebaseApp));
+    await signOutUser();
     router.replace(routes.home);
   }
 
-  if (!user) return <main className={styles.profileLoading}>{profile.loading}</main>;
+  async function handleVerifyEmail() {
+    if (!user || user.emailVerified) return;
+
+    setVerificationMessage("");
+    setIsSendingVerification(true);
+    try {
+      await sendUserEmailVerification(user);
+      setVerificationMessage(profile.verificationSent);
+    } catch {
+      setVerificationMessage(profile.errors.verification);
+    } finally {
+      setIsSendingVerification(false);
+    }
+  }
+
+  if (!user)
+    return <main className={styles.profileLoading}>{profile.loading}</main>;
 
   const userName = user.displayName || user.email || common.brand;
   const initial = userName.charAt(0).toUpperCase();
@@ -123,18 +170,43 @@ export default function ProfilePage() {
           </div>
           <h2>{userName}</h2>
           <p>{user.email}</p>
-          <span
-            className={`${styles.verification} ${user.emailVerified ? styles.verified : ""}`}
-          >
-            {user.emailVerified ? profile.verified : profile.notVerified}
-          </span>
+          <div className={styles.verificationRow}>
+            <span
+              className={`${styles.verification} ${
+                user.emailVerified ? styles.verified : ""
+              }`}
+            >
+              {user.emailVerified ? profile.verified : profile.notVerified}
+            </span>
+            {!user.emailVerified && (
+              <button
+                className={styles.verifyEmail}
+                type="button"
+                onClick={handleVerifyEmail}
+                disabled={isSendingVerification}
+              >
+                {isSendingVerification
+                  ? profile.sendingVerification
+                  : profile.verifyEmail}
+              </button>
+            )}
+          </div>
+          {verificationMessage && (
+            <p className="profile-message" role="status">
+              {verificationMessage}
+            </p>
+          )}
           <dl>
             <div>
               <dt>{profile.memberSince}</dt>
               <dd>{createdAt}</dd>
             </div>
           </dl>
-          <button className={styles.signOut} type="button" onClick={handleSignOut}>
+          <button
+            className={styles.signOut}
+            type="button"
+            onClick={handleSignOut}
+          >
             {profile.signOut} <span>↗</span>
           </button>
         </aside>
@@ -160,7 +232,9 @@ export default function ProfilePage() {
                 <small>{profile.emailNote}</small>
               </label>
               {profileMessage && (
-                <p className="profile-message" role="status">{profileMessage}</p>
+                <p className="profile-message" role="status">
+                  {profileMessage}
+                </p>
               )}
               <button
                 className={styles.profileSave}
@@ -227,7 +301,9 @@ export default function ProfilePage() {
                 />
               </label>
               {preferencesMessage && (
-                <p className="profile-message" role="status">{preferencesMessage}</p>
+                <p className="profile-message" role="status">
+                  {preferencesMessage}
+                </p>
               )}
               <button className={styles.profileSave} type="submit">
                 {profile.savePreferences} <span>{common.arrow}</span>

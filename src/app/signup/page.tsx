@@ -3,10 +3,9 @@
 import Link from "next/link";
 import { type SubmitEvent, useState } from "react";
 import { useRouter } from "next/navigation";
-import { createUserWithEmailAndPassword, getAuth, updateProfile } from "firebase/auth";
-import { firebaseApp } from "../../lib/firebase";
 import messages from "../../locales/en.json";
 import { routes } from "../../routes";
+import { signUpWithEmail } from "../../services/firebase/auth";
 import styles from "../login/auth.module.css";
 import signupStyles from "./signup.module.css";
 
@@ -33,9 +32,7 @@ export default function SignUpPage() {
 
     setIsLoading(true);
     try {
-      const credential = await createUserWithEmailAndPassword(getAuth(firebaseApp), email, password);
-      const displayName = [firstName, lastName].filter(Boolean).join(" ");
-      if (displayName) await updateProfile(credential.user, { displayName });
+      await signUpWithEmail({ email, password, firstName, lastName });
       router.push(routes.home);
     } catch (signUpError: unknown) {
       const code = (signUpError as { code?: string }).code;

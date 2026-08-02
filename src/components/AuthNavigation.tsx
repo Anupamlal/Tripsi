@@ -1,16 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { getAuth, onAuthStateChanged, type User } from "firebase/auth";
 import { useEffect, useState } from "react";
-import { firebaseApp } from "../lib/firebase";
 import messages from "../locales/en.json";
 import { routes } from "../routes";
+import { subscribeToAuthChanges } from "../services/firebase/auth";
+import { type User } from "firebase/auth";
 
 export function AuthNavigation() {
   const [user, setUser] = useState<User | null | undefined>(undefined);
 
-  useEffect(() => onAuthStateChanged(getAuth(firebaseApp), setUser), []);
+  useEffect(() => subscribeToAuthChanges(setUser), []);
 
   if (user === undefined) return <span className="auth-nav-loading" aria-label={messages.common.loading} />;
   if (!user) return <Link className="login" href={routes.login}>{messages.landing.nav.login} <span>↗</span></Link>;

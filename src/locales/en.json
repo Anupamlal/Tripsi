@@ -134,8 +134,14 @@
     "memberSince": "Member since",
     "verified": "Email verified",
     "notVerified": "Email not verified",
+    "verifyEmail": "Verify email",
+    "sendingVerification": "Sending…",
+    "verificationSent": "Verification email sent. Please check your inbox.",
     "loading": "Loading your profile…",
-    "errors": { "save": "We couldn’t save your profile. Please try again." }
+    "errors": {
+      "save": "We couldn’t save your profile. Please try again.",
+      "verification": "We couldn’t send the verification email. Please try again."
+    }
   },
   "signup": {
     "eyebrow": "Start your journey",

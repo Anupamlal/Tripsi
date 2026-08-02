@@ -96,9 +96,31 @@
   font: 10px "DM Mono", monospace;
 }
 
+.verificationRow {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
 .verified {
   color: #347663;
   background: #e6f4ed;
+}
+
+.verifyEmail {
+  margin-top: 15px;
+  padding: 0;
+  border: 0;
+  color: var(--orange);
+  background: transparent;
+  font: 700 11px "DM Sans", sans-serif;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.verifyEmail:disabled {
+  color: #9b9b93;
 }
 
 .profileSummary dl {

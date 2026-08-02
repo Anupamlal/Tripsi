@@ -5,8 +5,7 @@ import messages from "../../locales/en.json";
 import { routes } from "../../routes";
 import { useRouter } from "next/navigation";
 import { type SubmitEvent, useState } from "react";
-import { signInWithEmailAndPassword, getAuth } from "firebase/auth";
-import { firebaseApp } from "../../lib/firebase";
+import { loginWithEmail } from "../../services/firebase/auth";
 import styles from "./auth.module.css";
 
 const { common, login } = messages;
@@ -30,7 +29,7 @@ export default function LoginPage() {
 
     setIsLoading(true);
     try {
-      const userCredential = await signInWithEmailAndPassword(getAuth(firebaseApp), email, password);
+      const userCredential = await loginWithEmail(email, password);
       if (userCredential.user) {
         router.push(routes.home);
       } else {
